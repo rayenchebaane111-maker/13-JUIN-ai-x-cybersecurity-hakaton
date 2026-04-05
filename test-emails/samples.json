@@ -1,0 +1,86 @@
+[
+  {
+    "id": "clean_email",
+    "provider": "gmail",
+    "sender": "Amazon Orders <auto-confirm@amazon.com>",
+    "subject": "Your Amazon order has shipped",
+    "body": "Hello, your order #113-8832910-1001221 has shipped and will arrive by Tuesday. Track your package in your account. Thank you for shopping with Amazon.",
+    "links": [
+      {
+        "href": "https://www.amazon.com/gp/css/order-history",
+        "text": "Track your package"
+      }
+    ],
+    "attachments": []
+  },
+  {
+    "id": "phishing_email_basic",
+    "provider": "outlook",
+    "sender": "PayPal Security <alert@paypaI-security-mail.com>",
+    "subject": "Urgent: Verify your PayPal account now",
+    "body": "Your account will be suspended unless you verify immediately. Act now to avoid permanent lock. Click below and confirm identity.",
+    "links": [
+      {
+        "href": "https://bit.ly/3XqSecurePayPal",
+        "text": "PayPal Verification Center"
+      }
+    ],
+    "attachments": []
+  },
+  {
+    "id": "phishing_email_advanced",
+    "provider": "gmail",
+    "sender": "Bank Fraud Team <fraud-alert@secure-bankverify.tk>",
+    "subject": "Final notice: Account locked due to unusual activity",
+    "body": "Final notice. Your online banking access is locked. Verify your account details and update billing now. If no response within 24 hours your account will be suspended.",
+    "links": [
+      {
+        "href": "http://185.220.101.42/login/secure-update",
+        "text": "Secure Bank Portal"
+      }
+    ],
+    "attachments": ["SecurityForm.zip"]
+  },
+  {
+    "id": "phishing_email_social_engineering",
+    "provider": "outlook",
+    "sender": "HR Department <hr-update@company-benefits-alert.com>",
+    "subject": "Immediate action required: payroll account verification",
+    "body": "Hi team member, this is HR. Immediately confirm your payroll details to avoid delayed salary. Last chance before cutoff. Use internal verification endpoint 192.168.1.45.",
+    "links": [
+      {
+        "href": "http://103.15.28.77/hr-verify",
+        "text": "Employee HR Portal"
+      }
+    ],
+    "attachments": []
+  },
+  {
+    "id": "financial_scam_email",
+    "provider": "gmail",
+    "sender": "Finance Office <finance-payments@vendor-notice.com>",
+    "subject": "ASAP wire transfer needed for confidential acquisition",
+    "body": "Please process an urgent wire today. Reply with bank account, routing number, and SWIFT details. Final notice, this is time-sensitive and confidential.",
+    "links": [
+      {
+        "href": "https://payments-vendor-support.xyz/secure-pay",
+        "text": "Payment instructions"
+      }
+    ],
+    "attachments": ["invoice-urgent.pdf"]
+  },
+  {
+    "id": "toxic_email",
+    "provider": "outlook",
+    "sender": "Unknown Sender <threat@anon-mail.click>",
+    "subject": "You are worthless",
+    "body": "You are worthless trash and an idiot. We hate your team and will ruin your day unless you comply now.",
+    "links": [
+      {
+        "href": "https://anon-mail.click/message",
+        "text": "Read message"
+      }
+    ],
+    "attachments": []
+  }
+]

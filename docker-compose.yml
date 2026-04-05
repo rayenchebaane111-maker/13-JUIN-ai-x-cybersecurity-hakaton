@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    container_name: shield-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongo:27017/shield}
+      - PORT=${PORT:-3000}
+      - NODE_ENV=${NODE_ENV:-production}
+      - JWT_SECRET=${JWT_SECRET}
+      - FRONTEND_URL=${FRONTEND_URL:-https://extension.local}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-7d}
+      - LLM_ENABLED=${LLM_ENABLED:-false}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - LLM_BASE_URL=${LLM_BASE_URL:-https://api.openai.com/v1}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o-mini}
+      - LLM_TIMEOUT_MS=${LLM_TIMEOUT_MS:-12000}
+      - LLM_WEIGHT=${LLM_WEIGHT:-0.3}
+      - LLM_ALWAYS_ON=${LLM_ALWAYS_ON:-false}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    networks:
+      - backend
+
+  mongo:
+    image: mongo:6.0
+    container_name: shield-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  mongo_data:

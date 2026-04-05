@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Cyber Shield</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="app" id="app">
+      <header class="header">
+        <h1>🛡️ AI Cyber Shield</h1>
+        <p class="tagline">Explainable phishing defense for human-in-the-loop decisions</p>
+        <button id="toggleDebugBtn" class="debug-toggle">DEBUG MODE</button>
+      </header>
+
+      <section id="debugPanel" class="debug-panel">
+        <div class="debug-header">
+          <h2>Pipeline Debug</h2>
+          <div class="debug-actions">
+            <button id="refreshDebugBtn" class="btn secondary">Refresh</button>
+            <button id="exportDebugBtn" class="btn secondary">Export Debug JSON</button>
+          </div>
+        </div>
+        <div id="debugSummary" class="debug-summary"></div>
+        <pre id="debugOutput" class="debug-output"></pre>
+      </section>
+
+      <section id="initialView" class="view visible">
+        <p class="empty-state">Open an email in Gmail or Outlook Web, then click the extension.</p>
+      </section>
+
+      <section id="loadingView" class="view">
+        <div class="spinner" aria-label="Analyzing"></div>
+        <p>Analyzing email...</p>
+      </section>
+
+      <section id="errorView" class="view">
+        <p id="errorText" class="error-text">Unable to analyze this email.</p>
+        <button id="retryBtn" class="btn secondary">Retry</button>
+      </section>
+
+      <section id="mainView" class="view">
+        <section class="analysis-meta">
+          <div><strong>Analyzed Sender:</strong> <span id="analyzedSender">-</span></div>
+          <div><strong>Analyzed Subject:</strong> <span id="analyzedSubject">-</span></div>
+          <div><strong>Analyzed At:</strong> <span id="analyzedAt">-</span></div>
+          <div><strong>Body Length:</strong> <span id="analyzedBodyLength">-</span></div>
+          <div><strong>Links Extracted:</strong> <span id="analyzedLinksCount">-</span></div>
+          <div><strong>Message Fingerprint:</strong> <span id="analyzedFingerprint">-</span></div>
+          <div><strong>Adaptive Status:</strong> <span id="adaptiveStatus">-</span></div>
+          <div><strong>Suspicious Count:</strong> <span id="adaptiveCount">-</span></div>
+          <div><strong>Recommended Action:</strong> <span id="adaptiveAction">-</span></div>
+        </section>
+
+        <div class="score-card">
+          <svg id="threatGauge" viewBox="0 0 220 120" class="gauge" role="img" aria-label="Threat score gauge">
+            <path class="gauge-track" d="M20 100 A90 90 0 0 1 200 100"></path>
+            <path id="gaugeFill" class="gauge-fill" d="M20 100 A90 90 0 0 1 200 100"></path>
+            <text id="scoreText" x="110" y="86" text-anchor="middle" class="score-text">0</text>
+          </svg>
+          <div id="threatLevelBadge" class="threat-badge low">Low</div>
+        </div>
+
+        <section>
+          <h2>Detected Risks</h2>
+          <div id="whySummary" class="why-summary"></div>
+          <div id="risksList" class="risks-list"></div>
+        </section>
+
+        <section class="actions">
+          <button id="blockBtn" class="btn danger">Block Sender</button>
+          <button id="trustBtn" class="btn success">Trust Sender</button>
+          <button id="ignoreBtn" class="btn secondary">Ignore</button>
+        </section>
+
+        <button id="showLogsBtn" class="link-btn">View Decision History</button>
+      </section>
+
+      <section id="logView" class="view">
+        <div class="log-header">
+          <h2>Decision History</h2>
+          <div class="log-controls">
+            <button id="exportLogsBtn" class="btn secondary">Export CSV</button>
+            <button id="backToMainBtn" class="btn">Back</button>
+          </div>
+        </div>
+        <ul id="logList" class="log-list"></ul>
+      </section>
+    </main>
+
+    <script src="../utils/debugger.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

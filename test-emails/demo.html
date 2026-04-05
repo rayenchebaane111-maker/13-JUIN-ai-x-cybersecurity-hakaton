@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Cyber Shield - Demo Emails</title>
+    <style>
+      :root {
+        --blue: #2196f3;
+        --green: #4caf50;
+        --yellow: #ffc107;
+        --orange: #ff6f00;
+        --red: #f44336;
+        --bg: #f2f7ff;
+        --text: #0f172a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+        background: radial-gradient(circle at top, #e8f3ff, #f7fbff 60%, #edf5ff);
+        color: var(--text);
+      }
+
+      .wrap {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+      }
+
+      h1 {
+        margin: 0;
+      }
+
+      .subtitle {
+        margin: 8px 0 18px;
+        color: #475569;
+      }
+
+      .warning {
+        background: #fff8e1;
+        border: 1px solid #ffe082;
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 0.95rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 14px;
+        margin-top: 16px;
+      }
+
+      .card {
+        background: #fff;
+        border: 1px solid #dbe7f5;
+        border-radius: 12px;
+        padding: 14px;
+        box-shadow: 0 8px 22px rgba(22, 40, 78, 0.08);
+      }
+
+      .card h3 {
+        margin: 0 0 8px;
+      }
+
+      .meta {
+        color: #475569;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+      }
+
+      .body-preview {
+        font-size: 0.92rem;
+        line-height: 1.4;
+        color: #334155;
+        min-height: 84px;
+      }
+
+      button {
+        border: none;
+        background: var(--blue);
+        color: #fff;
+        border-radius: 8px;
+        padding: 9px 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      button:hover {
+        filter: brightness(0.95);
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.58);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+
+      .modal.open {
+        display: flex;
+      }
+
+      .modal-box {
+        width: min(760px, 100%);
+        max-height: 85vh;
+        overflow: auto;
+        background: #fff;
+        border-radius: 12px;
+        padding: 16px;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        color: #fff;
+        font-weight: 700;
+      }
+
+      .risk-item {
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 10px;
+        margin-top: 8px;
+      }
+
+      .close {
+        background: #e2e8f0;
+        color: #111827;
+        margin-top: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>AI Cyber Human Shield Demo</h1>
+      <p class="subtitle">Standalone phishing demo with explainable detections and judge-friendly test scenarios.</p>
+      <div class="warning">
+        Open this file as an extension page (chrome-extension://YOUR_ID/test-emails/demo.html) so chrome.runtime messaging is available.
+      </div>
+      <div id="emailGrid" class="grid"></div>
+    </div>
+
+    <div id="resultModal" class="modal" role="dialog" aria-modal="true">
+      <div class="modal-box">
+        <h2>Analysis Result</h2>
+        <div id="resultContent"></div>
+        <button id="closeModal" class="close">Close</button>
+      </div>
+    </div>
+
+    <script>
+      const grid = document.getElementById("emailGrid");
+      const modal = document.getElementById("resultModal");
+      const resultContent = document.getElementById("resultContent");
+
+      document.getElementById("closeModal").addEventListener("click", () => {
+        modal.classList.remove("open");
+      });
+
+      function threatColor(level) {
+        const map = { Low: "#4CAF50", Medium: "#FFC107", High: "#FF6F00", Critical: "#F44336" };
+        return map[level] || "#2196F3";
+      }
+
+      function escapeHtml(v) {
+        return String(v)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      async function loadSamples() {
+        const res = await fetch("samples.json");
+        return res.json();
+      }
+
+      async function runDemoAnalysis(email) {
+        if (!window.chrome || !chrome.runtime || !chrome.runtime.sendMessage) {
+          throw new Error("chrome.runtime is not available. Open this page via chrome-extension://<id>/test-emails/demo.html");
+        }
+
+        return chrome.runtime.sendMessage({ action: "analyze_email", emailData: email });
+      }
+
+      function renderResult(email, response) {
+        if (!response || !response.success) {
+          resultContent.innerHTML = `<p>Analysis failed: ${escapeHtml(response?.error || "Unknown error")}</p>`;
+          modal.classList.add("open");
+          return;
+        }
+
+        const analysis = response.analysis;
+        const riskEntries = Object.entries(analysis.detections || {}).filter(([, d]) => d.detected);
+
+        resultContent.innerHTML = `
+          <p><strong>Subject:</strong> ${escapeHtml(email.subject)}</p>
+          <p><strong>Sender:</strong> ${escapeHtml(email.sender)}</p>
+          <p><strong>Threat Score:</strong> ${analysis.threatScore}</p>
+          <span class="badge" style="background:${threatColor(analysis.threatLevel)}">${escapeHtml(analysis.threatLevel)}</span>
+          <h3 style="margin-top:14px;">WHY it was flagged</h3>
+          ${
+            riskEntries.length
+              ? riskEntries
+                  .map(([name, detail]) => {
+                    const indicators = (detail.indicators || [])
+                      .map(
+                        (ind) => `
+                          <li>
+                            <strong>${escapeHtml(ind.reason)}</strong><br>
+                            ${escapeHtml(ind.explanation)}<br>
+                            Evidence: ${escapeHtml((ind.evidence || []).join(" | "))}
+                          </li>
+                        `
+                      )
+                      .join("");
+                    return `
+                      <div class="risk-item">
+                        <strong>${escapeHtml(name)}</strong> (${Math.round(detail.confidence || 0)}%)
+                        <ul>${indicators}</ul>
+                      </div>
+                    `;
+                  })
+                  .join("")
+              : "<p>No risks detected.</p>"
+          }
+        `;
+
+        modal.classList.add("open");
+      }
+
+      function renderCards(samples) {
+        grid.innerHTML = samples
+          .map(
+            (email) => `
+              <article class="card">
+                <h3>${escapeHtml(email.id)}</h3>
+                <div class="meta">${escapeHtml(email.sender)}</div>
+                <div class="meta"><strong>${escapeHtml(email.subject)}</strong></div>
+                <p class="body-preview">${escapeHtml(email.body.slice(0, 150))}...</p>
+                <button data-id="${escapeHtml(email.id)}">Test This Email</button>
+              </article>
+            `
+          )
+          .join("");
+
+        grid.querySelectorAll("button[data-id]").forEach((button) => {
+          button.addEventListener("click", async () => {
+            const email = samples.find((item) => item.id === button.dataset.id);
+            try {
+              const response = await runDemoAnalysis(email);
+              renderResult(email, response);
+            } catch (error) {
+              renderResult(email, { success: false, error: error.message });
+            }
+          });
+        });
+      }
+
+      (async () => {
+        const samples = await loadSamples();
+        renderCards(samples);
+      })();
+    </script>
+  </body>
+</html>
